@@ -1,11 +1,12 @@
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from pinterest.models import Movie
 from .serializers import MovieSerializer
-
+from .permissions import UserCanDeleteMovie
 
 @api_view(["GET"])
+@permission_classes([])
 def hello(request):
     data = {"message": "Hello from rest api"}
 
@@ -13,6 +14,7 @@ def hello(request):
 
 
 @api_view(["GET"])
+@permission_classes([])
 def movies_list(request):
     movies = Movie.objects.all()
     serialized_movies = MovieSerializer(instance=movies, many=True)
@@ -21,6 +23,7 @@ def movies_list(request):
 
 
 @api_view(["GET"])
+@permission_classes([])
 def movie_details(request, pk):
     movie = Movie.objects.get(pk=pk)
     serialized_movie = MovieSerializer(instance=movie)
@@ -64,6 +67,7 @@ def edit_movie(request, pk):
 
 
 @api_view(["DELETE"])
+@permission_classes([UserCanDeleteMovie])
 def delete_movie(request, pk):
 
     response = {}
